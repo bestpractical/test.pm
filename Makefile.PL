@@ -1,13 +1,17 @@
-require 5.004;  # It'll work if they have a new Test::Harness.
+
+require 5.004;
 use ExtUtils::MakeMaker;
-# Time-stamp: "2002-08-27 20:20:27 MDT"
+# Time-stamp: "2004-04-27 21:34:30 ADT"
 
 WriteMakefile
     (
      NAME		=> 'Test',
      VERSION_FROM	=> './lib/Test.pm',
      ABSTRACT_FROM	=> './lib/Test.pm',
-     PREREQ_PM	  	=> { 'Test::Harness' => 1.1601 },
+     PREREQ_PM	  	=> {
+       'Test::Harness' => 1.1601,
+       'File::Spec'    => 0,
+     },
      INSTALLDIRS        => 'perl',
     );
 

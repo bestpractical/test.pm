@@ -1,5 +1,14 @@
-# ChangeLog for Test.pm dist         # Time-stamp: "2003-04-18 21:47:34 AHDT"
+# ChangeLog for Test.pm dist         # Time-stamp: "2004-04-24 20:33:01 ADT"
 
+
+
+2004-04-24  Sean M. Burke <sburke@cpan.org>
+	* Release 1.25
+	* added some new tests
+	* Gisle Aas kindly contributes a bunch of new code that diffs
+	multiline result and expectation
+	* corrected some doc typoes to do with skip()
+	
 2003-04-18  Sean M. Burke <sburke@cpan.org>
 	* Release 1.24
 	* Two cosmetic fixes:  Ken Williams spotted the typo (tr/[...]//d
