@@ -1,3 +1,8 @@
+2001-12-17  Michael G Schwern <schwern@pobox.com
+	* Release 1.19
+	- Resetting globals for mod_perl testing (thanks to Stas Bekman)
+ 	- License change to be same as perl's
+
 2001-07-20  Michael G Schwern <schwern@pobox.com>
 	* Release 1.18
 	* Now recommending Test::Simple/More in the docs

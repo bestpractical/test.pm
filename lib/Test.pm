@@ -6,19 +6,27 @@ use strict;
 
 use Carp;
 use vars (qw($VERSION @ISA @EXPORT @EXPORT_OK $ntest $TestLevel), #public-ish
-	  qw($TESTOUT $ONFAIL %todo %history $planned @FAILDETAIL)#private-ish
+          qw($TESTOUT $ONFAIL %todo %history $planned @FAILDETAIL)#private-ish
          );
 
-$VERSION = '1.18';
+# In case a test is run in a persistent environment.
+sub _reset_globals {
+    %todo       = ();
+    %history    = ();
+    @FAILDETAIL = ();
+    $ntest      = 1;
+    $TestLevel  = 0;		# how many extra stack frames to skip
+    $planned    = 0;
+}
+
+$VERSION = '1.19';
 require Exporter;
 @ISA=('Exporter');
 
 @EXPORT    = qw(&plan &ok &skip);
 @EXPORT_OK = qw($ntest $TESTOUT);
 
-$TestLevel = 0;		# how many extra stack frames to skip
 $|=1;
-$ntest=1;
 $TESTOUT = *STDOUT{IO};
 
 # Use of this variable is strongly discouraged.  It is set mainly to
@@ -111,6 +119,8 @@ sub plan {
 
     local($\, $,);   # guard against -l and other things that screw with
                      # print
+
+    _reset_globals();
 
     my $max=0;
     for (my $x=0; $x < @_; $x+=2) {
@@ -451,7 +461,6 @@ Current maintainer, Michael G Schwern <schwern@pobox.com>
 
 This package is free software and is provided "as is" without express
 or implied warranty.  It may be used, redistributed and/or modified
-under the terms of the Perl Artistic License (see
-http://www.perl.com/perl/misc/Artistic.html)
+under the same terms as Perl itself.
 
 =cut
