@@ -2,8 +2,9 @@ use strict;
 package Test;
 use Test::Harness 1.1601 ();
 use Carp;
-use vars qw($VERSION @ISA @EXPORT $ntest %todo %history $TestLevel);
-$VERSION = '0.08';
+use vars (qw($VERSION @ISA @EXPORT $ntest $TestLevel), #public-ish
+	  qw($IFFAIL %todo %history $planned));        #private-ish
+$VERSION = '0.10';
 require Exporter;
 @ISA=('Exporter');
 @EXPORT= qw(&plan &ok &skip $ntest);
@@ -19,12 +20,17 @@ $ENV{REGRESSION_TEST} = $0;
 
 sub plan {
     croak "Test::plan(%args): odd number of arguments" if @_ & 1;
+    croak "Test::plan(): should not be called more than once" if $planned;
     my $max=0;
     for (my $x=0; $x < @_; $x+=2) {
 	my ($k,$v) = @_[$x,$x+1];
 	if ($k =~ /^test(s)?$/) { $max = $v; }
 	elsif ($k eq 'todo' or 
 	       $k eq 'failok') { for (@$v) { $todo{$_}=1; }; }
+	elsif ($k eq 'iffail') { 
+	    ref $v eq 'CODE' or croak "Test::plan(iffail => $v): must be CODE";
+	    $IFFAIL = $v; 
+	}
 	else { carp "Test::plan(): skipping unrecognized directive '$k'" }
     }
     my @todo = sort { $a <=> $b } keys %todo;
@@ -33,6 +39,7 @@ sub plan {
     } else {
 	print "1..$max\n";
     }
+    ++$planned;
 }
 
 sub to_value {
@@ -40,21 +47,22 @@ sub to_value {
     (ref $v or '') eq 'CODE' ? $v->() : $v;
 }
 
-# prototypes are not used for maximum flexibility
+# prototypes are avoided; flexibility is critical
 
-# STDERR is NOT used for diagnostic output that should be fixed before
-# the module is released.
+# STDERR is NOT used for diagnostic output which should have been
+# fixed before release.  Is this appropriate?
 
 sub ok {
+    croak "ok: plan before you test!" if !$planned;
     my ($pkg,$file,$line) = caller($TestLevel);
     my $repetition = ++$history{"$file:$line"};
     my $context = ("$file at line $line".
-		   ($repetition > 1 ? " (\#$repetition)" : ''));
+		   ($repetition > 1 ? " fail \#$repetition" : ''));
     my $ok=0;
 
     if (@_ == 0) {
 	print "not ok $ntest\n";
-	print "# test $context: DOESN'T TEST ANYTHING!\n";
+	print "# Test $ntest in $context: DOESN'T TEST ANYTHING!\n";
     } else {
 	my $result = to_value(shift);
 	my ($expected,$diag);
@@ -66,7 +74,7 @@ sub ok {
 	}
 	if ($todo{$ntest}) {
 	    if ($ok) { 
-		print "ok $ntest # Wow!\n";
+		print "ok $ntest # Wow! ($context)\n";
 	    } else {
 		$diag = to_value(shift) if @_;
 		if (!$diag) {
@@ -80,19 +88,22 @@ sub ok {
 	    print "ok $ntest\n";
 
 	    if (!$ok) {
+		$IFFAIL->(), undef $IFFAIL if $IFFAIL;
 		$diag = to_value(shift) if @_;
 		if (!defined $expected) {
 		    if (!$diag) {
-			print STDERR "# Failed $context\n";
+			print STDERR "# Failed test $ntest in $context\n";
 		    } else {
-			print STDERR "# Failed $context: $diag\n";
+			print STDERR "# Failed test $ntest in $context: $diag\n";
 		    }
 		} else {
-		    print STDERR "#      Got: '$result' ($context)\n";
+		    my $prefix = "Test $ntest";
+		    print STDERR "# $prefix got: '$result' ($context)\n";
+		    $prefix = ' ' x (length($prefix) - 5);
 		    if (!$diag) {
-			print STDERR "# Expected: '$expected'\n";
+			print STDERR "# $prefix Expected: '$expected'\n";
 		    } else {
-			print STDERR "# Expected: '$expected' ($diag)\n";
+			print STDERR "# $prefix Expected: '$expected' ($diag)\n";
 		    }
 		}
 	    }
@@ -178,6 +189,16 @@ as a TODO test starts working, it should be promoted to a normal test
 and the new feature should be documented in the release notes.
 
 =back
+
+=head1 IFFAIL
+
+  BEGIN { plan test => 4, iffail => sub { warn "CALL 911!" } }
+
+The first test failure can trigger extra diagnostics when you use the
+iffail hook.  This optional feature can print out the version of your
+package and/or how to report problems.  It's not a panacea, however.
+Core dumps or other unrecoverable errors will prevent the iffail hook
+from running.
 
 =head1 SEE ALSO
 

@@ -8,4 +8,9 @@ WriteMakefile
      'macro'		=> { INSTALLDIRS => 'perl' },
     );
 
-warn "\nAll tests should succeed...\n  except for all of the tests in t/fail.t.\n";
+warn "\nAll tests should succeed...
+  except for two tests in t/iffail.t
+             and all tests in t/fail.t
+
+";
+

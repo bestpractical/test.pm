@@ -15,8 +15,5 @@ my @list = (0,0);
 $r |= ok(scalar(@list), 1, "\@list=".join(',',@list));
 $r |= ok(scalar(@list), 1, sub { "\@list=".join(',',@list) });
 
-for (1..2) {
-    $r |= ok(0);
-}
-
-ok($r); # failure==success
+for (1..2) { $r |= ok(0); }
+ok($r); # (failure==success :-)
