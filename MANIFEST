@@ -1,10 +1,11 @@
-Harness.diff
 MANIFEST
 Makefile.PL
 README
+TODO
 lib/Test.pm
 lib/Test/Harness.pm
-t/failok.t
+t/fail.t
 t/mix.t
-t/perfect.t
 t/skip.t
+t/success.t
+t/todo.t

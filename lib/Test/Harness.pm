@@ -11,7 +11,7 @@ use vars qw($VERSION $verbose $switches $have_devel_corestack $curtest
 	    @ISA @EXPORT @EXPORT_OK);
 $have_devel_corestack = 0;
 
-$VERSION = "1.16";
+$VERSION = "1.1601";
 
 @ISA=('Exporter');
 @EXPORT= qw(&runtests);
@@ -73,16 +73,16 @@ sub runtests {
 	$fh->open($cmd) or print "can't run $test. $!\n";
 	$ok = $next = $max = 0;
 	@failed = ();
-	my %failok = ();
+	my %todo = ();
         my $bonus = 0;
 	my $skipped = 0;
 	while (<$fh>) {
 	    if( $verbose ){
 		print $_;
 	    }
-	    if (/^1\.\.([0-9]+) fails([\d\s]+)\;/) {
+	    if (/^1\.\.([0-9]+) todo([\d\s]+)\;/) {
 		$max = $1;
-		for (split(/\s+/, $2)) { $failok{$_} = 1; }
+		for (split(/\s+/, $2)) { $todo{$_} = 1; }
 		$totmax += $max;
 		$files++;
 		$next = 1;
@@ -95,7 +95,7 @@ sub runtests {
 		my $this = $next;
 		if (/^not ok\s*(\d*)/){
 		    $this = $1 if $1 > 0;
-		    if (!$failok{$this}) {
+		    if (!$todo{$this}) {
 			push @failed, $this;
 		    } else {
 			$ok++;
@@ -106,7 +106,7 @@ sub runtests {
 		    $ok++;
 		    $totok++;
 		    $skipped++ if defined $2;
-		    $bonus++, $totbonus++ if $failok{$this};
+		    $bonus++, $totbonus++ if $todo{$this};
 		}
 		if ($this > $next) {
 		    # warn "Test output counter mismatch [test $this]\n";
