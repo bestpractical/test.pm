@@ -1,3 +1,10 @@
+2001-07-20  Michael G Schwern <schwern@pobox.com>
+	* Release 1.18
+	* Now recommending Test::Simple/More in the docs
+	* Removed warning about skip interface, it was a mistake
+	- added mention of Pod::Tests and SelfTest
+	- Test's tests no longer report "UNEXPECTEDLY SUCCEEDED"
+
 2001-05-29  Michael G Schwern <schwern@pobox.com>
 	* Release 1.17
 	- protected against stray $/ and $,

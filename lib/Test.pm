@@ -9,7 +9,7 @@ use vars (qw($VERSION @ISA @EXPORT @EXPORT_OK $ntest $TestLevel), #public-ish
 	  qw($TESTOUT $ONFAIL %todo %history $planned @FAILDETAIL)#private-ish
          );
 
-$VERSION = '1.17';
+$VERSION = '1.18';
 require Exporter;
 @ISA=('Exporter');
 
@@ -63,6 +63,9 @@ Test - provides a simple framework for writing test scripts
   skip($feature_is_missing, ...);    #do platform specific test
 
 =head1 DESCRIPTION
+
+B<STOP!> If you are writing a new test, we I<highly suggest> you use
+the new Test::Simple and Test::More modules instead.
 
 L<Test::Harness|Test::Harness> expects to see particular output when it
 executes tests.  This module aims to make writing proper test scripts just
@@ -319,11 +322,12 @@ sub skip ($;$$$) {
         return 1;
     } else {
         # backwards compatiblity (I think).  skip() used to be
-        # called like ok() and was expected to fail, which is weird.
-        warn <<WARN if $^W;
-This looks like a skip() using the very old interface.  Please upgrade to
-the documented interface as this has been deprecated.
-WARN
+        # called like ok(), which is weird.  I haven't decided what to do with
+        # this yet.
+#        warn <<WARN if $^W;
+#This looks like a skip() using the very old interface.  Please upgrade to
+#the documented interface as this has been deprecated.
+#WARN
 
 	local($TestLevel) = $TestLevel+1;  #ignore this stack frame
         return &ok(@_);
@@ -434,6 +438,8 @@ Implement noplan().
 L<Test::Simple>, L<Test::More>, L<Test::Harness>, L<Devel::Cover>
 
 L<Test::Unit> is an interesting alternative testing library.
+
+L<Pod::Tests> and L<SelfTest> let you embed tests in code.
 
 
 =head1 AUTHOR
