@@ -1,3 +1,13 @@
+2001-02-16  Michael G Schwern <schwern@pobox.com>
+
+	* Release 1.16
+
+	* Taken over maintenance from Joshua.  Altered AUTHOR appropriately.
+	  Blame me.
+
+	* t/fail.t was failing on Windows because the filename was
+	  hardcoded in the test (its t\fail.t on Windows).  NOT A BUG!
+
 2000-11-22  Joshua Pritikin  <joshua.pritikin@db.com>
 
 	* Release 1.15.

@@ -4,7 +4,7 @@ use Test::Harness 1.1601 ();
 use Carp;
 use vars (qw($VERSION @ISA @EXPORT @EXPORT_OK $ntest $TestLevel), #public-ish
 	  qw($TESTOUT $ONFAIL %todo %history $planned @FAILDETAIL)); #private-ish
-$VERSION = '1.15';
+$VERSION = '1.16';
 require Exporter;
 @ISA=('Exporter');
 @EXPORT=qw(&plan &ok &skip);
@@ -240,11 +240,13 @@ than the code it is testing, yes?)
 
 =head1 SEE ALSO
 
-L<Test::Harness> and, perhaps, test coverage analysis tools.
+L<Test::Harness> and L<Devel::Coverage>
 
 =head1 AUTHOR
 
 Copyright (c) 1998-1999 Joshua Nathaniel Pritikin.  All rights reserved.
+
+Current maintainer, Michael G Schwern <schwern@pobox.com>
 
 This package is free software and is provided "as is" without express
 or implied warranty.  It may be used, redistributed and/or modified
