@@ -1,3 +1,8 @@
 Test - provides a simple framework for writing test scripts
 
 This module is part of the main perl distribution.
+
+
+NOTE: When you run "make test" you will see tests skipped and
+unexpectedly succeeding.  THIS IS NORMAL.  I might make it quieter in
+the future.

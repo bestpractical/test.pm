@@ -1,3 +1,11 @@
+2001-05-29  Michael G Schwern <schwern@pobox.com>
+	* Release 1.17
+	- protected against stray $/ and $,
+	* documented ok()
+	* made the regex diagnostics a bit more obvious
+ 	* Backported to 5.004 (if you're using the new Test::Harness)
+	* Included the VMS fix for ok()
+
 2001-02-16  Michael G Schwern <schwern@pobox.com>
 
 	* Release 1.16

@@ -8,7 +8,11 @@ open F, ">fails";
 $TESTOUT = *F{IO};
 
 my $r=0;
-$r |= skip(0,0);
+{
+    # Shut up deprecated usage warning.
+    local $^W = 0;
+    $r |= skip(0,0);
+}
 $r |= ok(0);
 $r |= ok(0,1);
 $r |= ok(sub { 1+1 }, 3);
@@ -52,38 +56,38 @@ for (my $x=0; $x < @got; $x++) {
 
 BEGIN {
     $Expect = <<"EXPECT";
-# Failed test 1 in $0 at line 11
+# Failed test 1 in $0 at line 14
 
-# Failed test 2 in $0 at line 12
+# Failed test 2 in $0 at line 16
 
-# Test 3 got: '0' ($0 at line 13)
+# Test 3 got: '0' ($0 at line 17)
 #   Expected: '1'
 
-# Test 4 got: '2' ($0 at line 14)
+# Test 4 got: '2' ($0 at line 18)
 #   Expected: '3'
 
-# Test 5 got: '2' ($0 at line 15)
+# Test 5 got: '2' ($0 at line 19)
 #   Expected: '0'
 
-# Test 6 got: '2' ($0 at line 18)
+# Test 6 got: '2' ($0 at line 22)
 #   Expected: '1' (\@list=0,0)
 
-# Test 7 got: '2' ($0 at line 19)
+# Test 7 got: '2' ($0 at line 23)
 #   Expected: '1' (\@list=0,0)
 
-# Test 8 got: 'segmentation fault' ($0 at line 20)
-#   Expected: '/bongo/'
+# Test 8 got: 'segmentation fault' ($0 at line 24)
+#   Expected: qr{bongo}
 
-# Failed test 9 in $0 at line 22
+# Failed test 9 in $0 at line 26
 
-# Failed test 10 in $0 at line 22 fail #2
+# Failed test 10 in $0 at line 26 fail #2
 
-# Failed test 11 in $0 at line 24
+# Failed test 11 in $0 at line 28
 
-# Test 12 got: <UNDEF> ($0 at line 25)
+# Test 12 got: <UNDEF> ($0 at line 29)
 #    Expected: '1'
 
-# Failed test 13 in $0 at line 27
+# Failed test 13 in $0 at line 31
 EXPECT
 
 }
