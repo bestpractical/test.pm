@@ -9,7 +9,7 @@ WriteMakefile
     );
 
 warn "\nAll tests should succeed...
-  except for two tests in t/iffail.t
+  except for one test in t/onfail.t
              and all tests in t/fail.t
 
 ";

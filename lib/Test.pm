@@ -3,8 +3,8 @@ package Test;
 use Test::Harness 1.1601 ();
 use Carp;
 use vars (qw($VERSION @ISA @EXPORT $ntest $TestLevel), #public-ish
-	  qw($IFFAIL %todo %history $planned));        #private-ish
-$VERSION = '0.10';
+	  qw($ONFAIL %todo %history $planned @FAILDETAIL)); #private-ish
+$VERSION = '1.01';
 require Exporter;
 @ISA=('Exporter');
 @EXPORT= qw(&plan &ok &skip $ntest);
@@ -27,9 +27,9 @@ sub plan {
 	if ($k =~ /^test(s)?$/) { $max = $v; }
 	elsif ($k eq 'todo' or 
 	       $k eq 'failok') { for (@$v) { $todo{$_}=1; }; }
-	elsif ($k eq 'iffail') { 
-	    ref $v eq 'CODE' or croak "Test::plan(iffail => $v): must be CODE";
-	    $IFFAIL = $v; 
+	elsif ($k eq 'onfail') { 
+	    ref $v eq 'CODE' or croak "Test::plan(onfail => $v): must be CODE";
+	    $ONFAIL = $v; 
 	}
 	else { carp "Test::plan(): skipping unrecognized directive '$k'" }
     }
@@ -47,81 +47,80 @@ sub to_value {
     (ref $v or '') eq 'CODE' ? $v->() : $v;
 }
 
-# prototypes are avoided; flexibility is critical
-
 # STDERR is NOT used for diagnostic output which should have been
 # fixed before release.  Is this appropriate?
 
-sub ok {
+sub ok ($;$$) {
     croak "ok: plan before you test!" if !$planned;
     my ($pkg,$file,$line) = caller($TestLevel);
     my $repetition = ++$history{"$file:$line"};
     my $context = ("$file at line $line".
 		   ($repetition > 1 ? " fail \#$repetition" : ''));
     my $ok=0;
-
+    my $result = to_value(shift);
+    my ($expected,$diag);
     if (@_ == 0) {
-	print "not ok $ntest\n";
-	print "# Test $ntest in $context: DOESN'T TEST ANYTHING!\n";
+	$ok = $result;
     } else {
-	my $result = to_value(shift);
-	my ($expected,$diag);
-	if (@_ == 0) {
-	    $ok = $result;
+	$expected = to_value(shift);
+	$ok = $result eq $expected;
+    }
+    if ($todo{$ntest}) {
+	if ($ok) { 
+	    print "ok $ntest # Wow! ($context)\n";
 	} else {
-	    $expected = to_value(shift);
-	    $ok = $result eq $expected;
-	}
-	if ($todo{$ntest}) {
-	    if ($ok) { 
-		print "ok $ntest # Wow! ($context)\n";
+	    $diag = to_value(shift) if @_;
+	    if (!$diag) {
+		print "not ok $ntest # (failure expected in $context)\n";
 	    } else {
-		$diag = to_value(shift) if @_;
+		print "not ok $ntest # (failure expected: $diag)\n";
+	    }
+	}
+    } else {
+	print "not " if !$ok;
+	print "ok $ntest\n";
+	
+	if (!$ok) {
+	    my $detail = { 'repetition' => $repetition, 'package' => $pkg,
+			   'result' => $result };
+	    $$detail{expected} = $expected if defined $expected;
+	    $diag = $$detail{diagnostic} = to_value(shift) if @_;
+	    if (!defined $expected) {
 		if (!$diag) {
-		    print "not ok $ntest # (failure expected)\n";
+		    print STDERR "# Failed test $ntest in $context\n";
 		} else {
-		    print "not ok $ntest # (failure expected: $diag)\n";
+		    print STDERR "# Failed test $ntest in $context: $diag\n";
+		}
+	    } else {
+		my $prefix = "Test $ntest";
+		print STDERR "# $prefix got: '$result' ($context)\n";
+		$prefix = ' ' x (length($prefix) - 5);
+		if (!$diag) {
+		    print STDERR "# $prefix Expected: '$expected'\n";
+		} else {
+		    print STDERR "# $prefix Expected: '$expected' ($diag)\n";
 		}
 	    }
-	} else {
-	    print "not " if !$ok;
-	    print "ok $ntest\n";
-
-	    if (!$ok) {
-		$IFFAIL->(), undef $IFFAIL if $IFFAIL;
-		$diag = to_value(shift) if @_;
-		if (!defined $expected) {
-		    if (!$diag) {
-			print STDERR "# Failed test $ntest in $context\n";
-		    } else {
-			print STDERR "# Failed test $ntest in $context: $diag\n";
-		    }
-		} else {
-		    my $prefix = "Test $ntest";
-		    print STDERR "# $prefix got: '$result' ($context)\n";
-		    $prefix = ' ' x (length($prefix) - 5);
-		    if (!$diag) {
-			print STDERR "# $prefix Expected: '$expected'\n";
-		    } else {
-			print STDERR "# $prefix Expected: '$expected' ($diag)\n";
-		    }
-		}
-	    }
+	    push @FAILDETAIL, $detail;
 	}
     }
     ++ $ntest;
     $ok;
 }
 
-sub skip {
+sub skip ($$;$$) {
     if (to_value(shift)) {
 	print "ok $ntest # skip\n";
 	++ $ntest;
 	1;
     } else {
 	local($TestLevel) += 1;  #ignore this stack frame
-	ok(@_);
+	&ok;
     }
+}
+
+END {
+    $ONFAIL->(\@FAILDETAIL) if @FAILDETAIL && $ONFAIL;
 }
 
 1;
@@ -190,15 +189,30 @@ and the new feature should be documented in the release notes.
 
 =back
 
-=head1 IFFAIL
+=head1 ONFAIL
 
-  BEGIN { plan test => 4, iffail => sub { warn "CALL 911!" } }
+  BEGIN { plan test => 4, onfail => sub { warn "CALL 911!" } }
 
-The first test failure can trigger extra diagnostics when you use the
-iffail hook.  This optional feature can print out the version of your
-package and/or how to report problems.  It's not a panacea, however.
-Core dumps or other unrecoverable errors will prevent the iffail hook
-from running.
+The test failures can trigger extra diagnostics at the end of the test
+run.  C<onfail> is passed an array ref of hash refs that describe each
+test failure.  Each hash will contain at least the following fields:
+package, repetition, and result.  (The file, line, and test number are
+not included because their correspondance to a particular test is
+fairly weak.)  If the test had an expected value or a diagnostic
+string, these will also be included.
+
+This optional feature might be used simply to print out the version of
+your package and/or how to report problems.  It might also be used to
+generate extremely sophisticated diagnostics for a particular test
+failure.  It's not a panacea, however.  Core dumps or other
+unrecoverable errors will prevent the C<onfail> hook from running.
+(It is run inside an END block.)  Besides, C<onfail> is probably
+over-kill in the majority of cases.  (Your test code should be simpler
+than the code it is testing, yes?)
+
+=head1 CONGRATULATIONS
+
+You are now an enthusiastic proponent of bug-free software!
 
 =head1 SEE ALSO
 

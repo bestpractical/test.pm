@@ -5,7 +5,7 @@ TODO
 lib/Test.pm
 lib/Test/Harness.pm
 t/fail.t
-t/iffail.t
+t/onfail.t
 t/mix.t
 t/skip.t
 t/success.t

@@ -5,4 +5,4 @@ BEGIN { plan tests => 6 }
 
 ok(ok(1));
 ok(ok('fixed', 'fixed'));
-ok(skip(1));
+ok(skip(1,0));

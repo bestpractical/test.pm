@@ -1,11 +1,10 @@
 # -*-perl-*-
 use strict;
 use Test;
-BEGIN { plan tests => 11 }
+BEGIN { plan tests => 10 }
 
 my $r=0;
-$r |= ok();
-$r |= skip(0);
+$r |= skip(0,0);
 $r |= ok(0);
 $r |= ok(0,1);
 $r |= ok(sub { 1+1 }, 3);
