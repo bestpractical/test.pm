@@ -3,7 +3,7 @@ package Test;
 use Test::Harness 1.16 ();
 use Carp;
 use vars qw($VERSION @ISA @EXPORT $ntest %failok);
-$VERSION = "0.03";
+$VERSION = "0.04";
 require Exporter;
 @ISA=('Exporter');
 @EXPORT= qw(&todo &ok &skip $ntest);
