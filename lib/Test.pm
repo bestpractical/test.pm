@@ -4,7 +4,7 @@ use Test::Harness 1.1601 ();
 use Carp;
 use vars (qw($VERSION @ISA @EXPORT $ntest $TestLevel), #public-ish
 	  qw($ONFAIL %todo %history $planned @FAILDETAIL)); #private-ish
-$VERSION = '1.02';
+$VERSION = '1.03';
 require Exporter;
 @ISA=('Exporter');
 @EXPORT= qw(&plan &ok &skip $ntest);
@@ -63,7 +63,14 @@ sub ok ($;$$) {
 	$ok = $result;
     } else {
 	$expected = to_value(shift);
-	$ok = $result eq $expected;
+	# until regex can be manipulated like objects...
+	my ($regex,$ignore);
+	if (($regex) = ($expected =~ m,^ / (.+) / $,sx) or
+	    ($ignore, $regex) = ($expected =~ m,^ m([^\w\s]) (.+) \1 $,sx)) {
+	    $ok = $result =~ /$regex/;
+	} else {
+	    $ok = $result eq $expected;
+	}
     }
     if ($todo{$ntest}) {
 	if ($ok) { 
@@ -134,7 +141,7 @@ __END__
 
   use strict;
   use Test;
-  BEGIN { plan tests => 12, todo => [3,4] }
+  BEGIN { plan tests => 13, todo => [3,4] }
 
   ok(0); # failure
   ok(1); # success
@@ -151,7 +158,8 @@ __END__
   ok(0, int(rand(2));  # (just kidding! :-)
 
   my @list = (0,0);
-  ok(scalar(@list), 3, "\@list=".join(',',@list));  #extra diagnostics
+  ok @list, 3, "\@list=".join(',',@list);  #extra diagnostics
+  ok 'segmentation fault', '/success/';    #regex match
 
   skip($feature_is_missing, ...);    #do platform specific test
 
