@@ -1,7 +1,9 @@
 # -*-perl-*-
 use strict;
-use Test;
-BEGIN { plan tests => 11 }
+use Test qw($TESTOUT $ntest ok skip plan); plan tests => 12;
+
+open F, ">fails";
+$TESTOUT = *F{IO};
 
 my $r=0;
 $r |= skip(0,0);
@@ -17,3 +19,56 @@ $r |= ok 'segmentation fault', '/bongo/';
 
 for (1..2) { $r |= ok(0); }
 ok($r); # (failure==success :-)
+
+close F;
+$TESTOUT = *STDOUT{IO};
+$ntest = 1;
+
+open F, "fails";
+my $O;
+while (<F>) { $O .= $_; }
+close F;
+unlink "fails";
+
+ok join(' ', map { m/(\d+)/; $1 } grep /^not ok/, split /\n+/, $O),
+    join(' ', 1..11);
+
+my @got = split /not ok \d+\n/, $O;
+shift @got;
+
+my $expect = join('',<DATA>);
+$expect =~ s/\n+$//;
+my @expect = split /\n\n/, $expect;
+
+for (my $x=0; $x < @got; $x++) {
+    ok $got[$x], $expect[$x]."\n";
+}
+
+__DATA__
+# Failed test 1 in t/fail.t at line 9
+
+# Failed test 2 in t/fail.t at line 10
+
+# Test 3 got: '0' (t/fail.t at line 11)
+#   Expected: '1'
+
+# Test 4 got: '2' (t/fail.t at line 12)
+#   Expected: '3'
+
+# Test 5 got: '2' (t/fail.t at line 13)
+#   Expected: '0'
+
+# Test 6 got: '2' (t/fail.t at line 16)
+#   Expected: '1' (@list=0,0)
+
+# Test 7 got: '2' (t/fail.t at line 17)
+#   Expected: '1' (@list=0,0)
+
+# Test 8 got: 'segmentation fault' (t/fail.t at line 18)
+#   Expected: '/bongo/'
+
+# Failed test 9 in t/fail.t at line 20
+
+# Failed test 10 in t/fail.t at line 20 fail #2
+
+# Failed test 11 in t/fail.t at line 21

@@ -33,38 +33,6 @@ Test::Harness expects to see particular output when it executes tests.
 This module aims to make writing proper test scripts just a little bit
 easier (and less error prone :-).
 
-=head1 TEST TYPES
-
-=over 4
-
-=item * NORMAL TESTS
-
-These tests are expected to succeed.  If they don't, something's
-screwed up!
-
-=item * SKIPPED TESTS
-
-Skip tests need a platform specific feature that might or might not be
-available.  The first argument should evaluate to true if the required
-feature is NOT available.  After the first argument, skip tests work
-exactly the same way as do normal tests.
-
-=item * TODO TESTS
-
-TODO tests are designed for maintaining an executable TODO list.
-These tests are expected NOT to succeed (otherwise the feature they
-test would be on the new feature list, not the TODO list).
-
-Packages should NOT be released with successful TODO tests.  As soon
-as a TODO test starts working, it should be promoted to a normal test
-and the new feature should be documented in the release notes.
-
-=back
-
-=head1 SEE ALSO
-
-L<Test::Harness> and various test coverage analysis tools.
-
 =head1 AUTHOR
 
 Copyright © 1998 Joshua Nathaniel Pritikin.  All rights reserved.

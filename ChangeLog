@@ -1,0 +1,27 @@
+1998-10-15  Joshua Pritikin  <joshua.pritikin@db.com>
+
+	* Release 1.09.
+
+	* Better diagnostics for failed todo tests.
+
+	* Document return value.
+
+1998-08-21  Joshua Pritikin  <joshua@eq1062.wks.na.deuba.com>
+
+	* Version 1.08.
+
+	* Documentation tweaks.
+
+1998-08-21  Joshua Pritikin  <joshua@eq1062.wks.na.deuba.com>
+
+	* Version 1.07.
+
+	* Send all output to $TESTOUT.
+
+	* Removed all failures from the test suite.  More work is still
+ 	needed but this is a start.
+
+	* Moved $ntest to @EXPORT_OK from @EXPORT.
+
+	* Instead of printing bits to STDERR, now all output goes to
+ 	STDOUT.
