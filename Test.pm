@@ -4,7 +4,7 @@ use Test::Harness 1.1601 ();
 use Carp;
 use vars (qw($VERSION @ISA @EXPORT @EXPORT_OK $ntest $TestLevel), #public-ish
 	  qw($TESTOUT $ONFAIL %todo %history $planned @FAILDETAIL)); #private-ish
-$VERSION = '1.11';
+$VERSION = '1.122';
 require Exporter;
 @ISA=('Exporter');
 @EXPORT=qw(&plan &ok &skip);
@@ -115,8 +115,10 @@ sub ok ($;$$) {
 }
 
 sub skip ($$;$$) {
-    if (to_value(shift)) {
-	print $TESTOUT "ok $ntest # skip\n";
+    my $whyskip = to_value(shift);
+    if ($whyskip) {
+	$whyskip = 'skip' if $whyskip =~ m/^\d+$/;
+	print $TESTOUT "ok $ntest # $whyskip\n";
 	++ $ntest;
 	1;
     } else {
@@ -160,7 +162,7 @@ __END__
 
   ok(sub { 1+1 }, 2);  # success: '2' eq '2'
   ok(sub { 1+1 }, 3);  # failure: '2' ne '3'
-  ok(0, int(rand(2));  # (just kidding! :-)
+  ok(0, int(rand(2));  # (just kidding :-)
 
   my @list = (0,0);
   ok @list, 3, "\@list=".join(',',@list);      #extra diagnostics
@@ -237,7 +239,7 @@ L<Test::Harness> and, perhaps, test coverage analysis tools.
 
 =head1 AUTHOR
 
-Copyright © 1998 Joshua Nathaniel Pritikin.  All rights reserved.
+Copyright (c) 1998 Joshua Nathaniel Pritikin.  All rights reserved.
 
 This package is free software and is provided "as is" without express
 or implied warranty.  It may be used, redistributed and/or modified

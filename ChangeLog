@@ -1,3 +1,13 @@
+1998-11-29  Joshua Pritikin  <joshua.pritikin@db.com>
+
+	* Release 1.122.
+
+	* Make Test.pm 7-bit clean.  (Sarathy)
+
+1998-11-23  Joshua Pritikin  <joshua.pritikin@db.com>
+
+	* Allow customization of 'skip' reason.  Improved tests.
+
 1998-11-17  Joshua Pritikin  <joshua.pritikin@db.com>
 
 	* Release 1.11.
