@@ -4,7 +4,7 @@ use Test::Harness 1.1601 ();
 use Carp;
 use vars (qw($VERSION @ISA @EXPORT $ntest $TestLevel), #public-ish
 	  qw($ONFAIL %todo %history $planned @FAILDETAIL)); #private-ish
-$VERSION = '1.01';
+$VERSION = '1.02';
 require Exporter;
 @ISA=('Exporter');
 @EXPORT= qw(&plan &ok &skip $ntest);
@@ -114,7 +114,7 @@ sub skip ($$;$$) {
 	++ $ntest;
 	1;
     } else {
-	local($TestLevel) += 1;  #ignore this stack frame
+	local($TestLevel) = $TestLevel+1;  #ignore this stack frame
 	&ok;
     }
 }
@@ -185,7 +185,8 @@ test would be on the new feature list, not the TODO list).
 
 Packages should NOT be released with successful TODO tests.  As soon
 as a TODO test starts working, it should be promoted to a normal test
-and the new feature should be documented in the release notes.
+and the newly minted feature should be documented in the release
+notes.
 
 =back
 
