@@ -4,7 +4,7 @@ use Test::Harness 1.1601 ();
 use Carp;
 use vars (qw($VERSION @ISA @EXPORT @EXPORT_OK $ntest $TestLevel), #public-ish
 	  qw($TESTOUT $ONFAIL %todo %history $planned @FAILDETAIL)); #private-ish
-$VERSION = '1.14';
+$VERSION = '1.15';
 require Exporter;
 @ISA=('Exporter');
 @EXPORT=qw(&plan &ok &skip);
@@ -177,9 +177,9 @@ __END__
 
 =head1 DESCRIPTION
 
-L<Test::Harness> expects to see particular output when it executes
-tests.  This module aims to make writing proper test scripts just a
-little bit easier (and less error prone :-).
+L<Test::Harness|Test::Harness> expects to see particular output when it
+executes tests.  This module aims to make writing proper test scripts just
+a little bit easier (and less error prone :-).
 
 =head1 TEST TYPES
 
