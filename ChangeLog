@@ -1,4 +1,9 @@
-# ChangeLog for Test.pm dist         # Time-stamp: "2002-08-28 22:28:02 MDT"
+# ChangeLog for Test.pm dist         # Time-stamp: "2002-10-11 17:33:13 MDT"
+
+2002-10-11  Sean M. Burke <sburke@cpan.org>
+	* Release 1.23
+	* Dermot Musgrove notes that I switched localtime and gmtime in
+	the last dist!  Fixed.  That is all.
 
 2002-08-28  Sean M. Burke <sburke@cpan.org>
 	* Release 1.22

@@ -1,7 +1,7 @@
 
 require 5.004;
 package Test;
-# Time-stamp: "2002-08-28 22:58:52 MDT"
+# Time-stamp: "2002-10-11 17:38:48 MDT"
 
 use strict;
 
@@ -21,7 +21,7 @@ sub _reset_globals {
     $planned    = 0;
 }
 
-$VERSION = '1.22';
+$VERSION = '1.23';
 require Exporter;
 @ISA=('Exporter');
 
@@ -188,7 +188,7 @@ sub plan {
 
     printf $TESTOUT
       "# Current time local: %s\n# Current time GMT:   %s\n",
-      scalar(   gmtime($^T)), scalar(localtime($^T));
+      scalar(localtime($^T)), scalar(gmtime($^T));
       
     print $TESTOUT "# Using Test.pm version $VERSION\n";
 
