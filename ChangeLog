@@ -1,3 +1,15 @@
+# ChangeLog for Test.pm dist         # Time-stamp: "2002-08-26 03:14:50 MDT"
+
+2002-08-26  Sean M. Burke <sburke@cpan.org>
+	* Release 1.21
+	* I take over maintenance.
+	* Lots of doc improvement and examples added.
+	* More comment lines are sent to STDERR/STDOUT, noting Perl
+	version and platform, noting content of line where error occurred
+	when it looks interesting, etc.
+	* A bit more DWIM with skip().
+	* Noted in the docs that this modules is indeed being developed.
+	
 2002-02-07  Michael G Schwern <schwern@pobox.com>
 	* Release 1.20
 	* Failure diagnostics now go to STDERR so they show up

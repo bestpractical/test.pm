@@ -1,5 +1,6 @@
 require 5.004;  # It'll work if they have a new Test::Harness.
 use ExtUtils::MakeMaker;
+# Time-stamp: "2002-08-26 02:58:26 MDT"
 
 WriteMakefile
     (
