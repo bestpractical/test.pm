@@ -1,3 +1,9 @@
+1998-11-17  Joshua Pritikin  <joshua.pritikin@db.com>
+
+	* Release 1.11.
+
+	* Add 5.005 dependency to Makefile.PL.
+
 1998-11-12  Joshua Pritikin  <joshua.pritikin@db.com>
 
 	* Release 1.10.
