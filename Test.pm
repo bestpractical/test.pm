@@ -4,7 +4,7 @@ use Test::Harness 1.1601 ();
 use Carp;
 use vars (qw($VERSION @ISA @EXPORT @EXPORT_OK $ntest $TestLevel), #public-ish
 	  qw($TESTOUT $ONFAIL %todo %history $planned @FAILDETAIL)); #private-ish
-$VERSION = '1.09';
+$VERSION = '1.10';
 require Exporter;
 @ISA=('Exporter');
 @EXPORT=qw(&plan &ok &skip);
@@ -62,9 +62,10 @@ sub ok ($;$$) {
 	$ok = $result;
     } else {
 	$expected = to_value(shift);
-	# until regex can be manipulated like objects...
 	my ($regex,$ignore);
-	if (($regex) = ($expected =~ m,^ / (.+) / $,sx) or
+	if ((ref($expected)||'') eq 'Regexp') {
+	    $ok = $result =~ /$expected/;
+	} elsif (($regex) = ($expected =~ m,^ / (.+) / $,sx) or
 	    ($ignore, $regex) = ($expected =~ m,^ m([^\w\s]) (.+) \1 $,sx)) {
 	    $ok = $result =~ /$regex/;
 	} else {
@@ -95,10 +96,15 @@ sub ok ($;$$) {
 		my $prefix = "Test $ntest";
 		print $TESTOUT "# $prefix got: '$result' ($context)\n";
 		$prefix = ' ' x (length($prefix) - 5);
-		if (!$diag) {
-		    print $TESTOUT "# $prefix Expected: '$expected'\n";
+		if ((ref($expected)||'') eq 'Regexp') {
+		    $expected = 'qr/'.$expected.'/'
 		} else {
-		    print $TESTOUT "# $prefix Expected: '$expected' ($diag)\n";
+		    $expected = "'$expected'";
+		}
+		if (!$diag) {
+		    print $TESTOUT "# $prefix Expected: $expected\n";
+		} else {
+		    print $TESTOUT "# $prefix Expected: $expected ($diag)\n";
 		}
 	    }
 	    push @FAILDETAIL, $detail;
@@ -136,7 +142,7 @@ __END__
   use Test;
 
   # use a BEGIN block so we print our plan before MyModule is loaded
-  BEGIN { plan tests => 13, todo => [3,4] }
+  BEGIN { plan tests => 14, todo => [3,4] }
 
   # load your module...
   use MyModule;
@@ -150,6 +156,7 @@ __END__
   ok(0,1);             # failure: '0' ne '1'
   ok('broke','fixed'); # failure: 'broke' ne 'fixed'
   ok('fixed','fixed'); # success: 'fixed' eq 'fixed'
+  ok('fixed',qr/x/);   # success: 'fixed' =~ qr/x/
 
   ok(sub { 1+1 }, 2);  # success: '2' eq '2'
   ok(sub { 1+1 }, 3);  # failure: '2' ne '3'
@@ -226,7 +233,7 @@ than the code it is testing, yes?)
 
 =head1 SEE ALSO
 
-L<Test::Harness> and test coverage analysis tools.
+L<Test::Harness> and, perhaps, test coverage analysis tools.
 
 =head1 AUTHOR
 

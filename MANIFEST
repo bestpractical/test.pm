@@ -8,6 +8,7 @@ Test.pm
 t/fail.t
 t/mix.t
 t/onfail.t
+t/qr.t
 t/skip.t
 t/success.t
 t/todo.t
