@@ -3,7 +3,7 @@ package Test;
 use Test::Harness 1.16 ();
 use Carp;
 use vars qw($VERSION @ISA @EXPORT $ntest %failok);
-$VERSION = "0.04";
+$VERSION = "0.05";
 require Exporter;
 @ISA=('Exporter');
 @EXPORT= qw(&todo &ok &skip $ntest);
@@ -41,7 +41,7 @@ sub ok {
 	if ($failok{$ntest}) {
 	    print("ok $ntest # Wow!\n");
 	} else {
-	    print("ok $ntest\n");
+	    print("ok $ntest # failure expected\n");
 	}
     } else {
 	print("not ok $ntest\n");
