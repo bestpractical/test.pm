@@ -1,6 +1,6 @@
 # -*-perl-*-
 use strict;
-use Test qw($TESTOUT $ntest ok skip plan); plan tests => 12;
+use Test qw($TESTOUT $ntest ok skip plan); plan tests => 14;
 
 open F, ">fails";
 $TESTOUT = *F{IO};
@@ -18,6 +18,10 @@ $r |= ok @list, 1, sub { "\@list=".join ',',@list };
 $r |= ok 'segmentation fault', '/bongo/';
 
 for (1..2) { $r |= ok(0); }
+
+$r |= ok(1, undef);
+$r |= ok(undef, 1);
+
 ok($r); # (failure==success :-)
 
 close F;
@@ -31,7 +35,7 @@ close F;
 unlink "fails";
 
 ok join(' ', map { m/(\d+)/; $1 } grep /^not ok/, split /\n+/, $O),
-    join(' ', 1..11);
+    join(' ', 1..13);
 
 my @got = split /not ok \d+\n/, $O;
 shift @got;
@@ -71,4 +75,9 @@ __DATA__
 
 # Failed test 10 in t/fail.t at line 20 fail #2
 
-# Failed test 11 in t/fail.t at line 21
+# Failed test 11 in t/fail.t at line 22
+
+# Test 12 got: <UNDEF> (t/fail.t at line 23)
+#    Expected: '1'
+
+# Failed test 13 in t/fail.t at line 25

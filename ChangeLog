@@ -1,3 +1,9 @@
+1999-05-07  Joshua Pritikin  <joshua.pritikin@db.com>
+
+	* Release 1.13.
+
+	* Handle undef without triggering warnings.  Added tests.
+
 1998-11-29  Joshua Pritikin  <joshua.pritikin@db.com>
 
 	* Release 1.122.

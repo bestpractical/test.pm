@@ -1,5 +1,3 @@
 add support for t/op/runlevel style testing?
 
-qr// ?
-
 negative assertion: !/re/
