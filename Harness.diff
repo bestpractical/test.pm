@@ -1,0 +1,185 @@
+*** /nw/dev/perl/core/5.004_56/src/lib/Test/Harness.pm	Thu Nov 27 09:57:39 1997
+--- lib/Test/Harness.pm	Mon Jan 19 14:08:31 1998
+***************
+*** 11,17 ****
+  	    @ISA @EXPORT @EXPORT_OK);
+  $have_devel_corestack = 0;
+  
+! $VERSION = "1.1502";
+  
+  @ISA=('Exporter');
+  @EXPORT= qw(&runtests);
+--- 11,17 ----
+  	    @ISA @EXPORT @EXPORT_OK);
+  $have_devel_corestack = 0;
+  
+! $VERSION = "1.16";
+  
+  @ISA=('Exporter');
+  @EXPORT= qw(&runtests);
+***************
+*** 43,49 ****
+  sub runtests {
+      my(@tests) = @_;
+      local($|) = 1;
+!     my($test,$te,$ok,$next,$max,$pct,$totok,@failed,%failedtests);
+      my $totmax = 0;
+      my $files = 0;
+      my $bad = 0;
+--- 43,49 ----
+  sub runtests {
+      my(@tests) = @_;
+      local($|) = 1;
+!     my($test,$te,$ok,$next,$max,$pct,$totok,$totbonus,@failed,%failedtests);
+      my $totmax = 0;
+      my $files = 0;
+      my $bad = 0;
+***************
+*** 73,98 ****
+  	$fh->open($cmd) or print "can't run $test. $!\n";
+  	$ok = $next = $max = 0;
+  	@failed = ();
+  	my $skipped = 0;
+  	while (<$fh>) {
+  	    if( $verbose ){
+  		print $_;
+  	    }
+! 	    if (/^1\.\.([0-9]+)/) {
+  		$max = $1;
+  		$totmax += $max;
+  		$files++;
+  		$next = 1;
+  	    } elsif ($max && /^(not\s+)?ok\b/) {
+  		my $this = $next;
+  		if (/^not ok\s*(\d*)/){
+  		    $this = $1 if $1 > 0;
+! 		    push @failed, $this;
+  		} elsif (/^ok\s*(\d*)(\s*\#\s*[Ss]kip)?/) {
+  		    $this = $1 if $1 > 0;
+  		    $ok++;
+  		    $totok++;
+  		    $skipped++ if defined $2;
+  		}
+  		if ($this > $next) {
+  		    # warn "Test output counter mismatch [test $this]\n";
+--- 73,112 ----
+  	$fh->open($cmd) or print "can't run $test. $!\n";
+  	$ok = $next = $max = 0;
+  	@failed = ();
++ 	my %failok = ();
++         my $bonus = 0;
+  	my $skipped = 0;
+  	while (<$fh>) {
+  	    if( $verbose ){
+  		print $_;
+  	    }
+! 	    if (/^1\.\.([0-9]+) fails([\d\s]+)\;/) {
+  		$max = $1;
++ 		for (split(/\s+/, $2)) { $failok{$_} = 1; }
+  		$totmax += $max;
+  		$files++;
+  		$next = 1;
++ 	    } elsif (/^1\.\.([0-9]+)/) {
++ 		$max = $1;
++ 		$totmax += $max;
++ 		$files++;
++ 		$next = 1;
+  	    } elsif ($max && /^(not\s+)?ok\b/) {
+  		my $this = $next;
+  		if (/^not ok\s*(\d*)/){
+  		    $this = $1 if $1 > 0;
+! 		    if (!$failok{$this}) {
+! 			push @failed, $this;
+! 		    } else {
+! 			$ok++;
+! 			$totok++;
+! 		    }
+  		} elsif (/^ok\s*(\d*)(\s*\#\s*[Ss]kip)?/) {
+  		    $this = $1 if $1 > 0;
+  		    $ok++;
+  		    $totok++;
+  		    $skipped++ if defined $2;
++ 		    $bonus++, $totbonus++ if $failok{$this};
+  		}
+  		if ($this > $next) {
+  		    # warn "Test output counter mismatch [test $this]\n";
+***************
+*** 144,152 ****
+  				    estat => $estatus, wstat => $wstatus,
+  				  };
+  	} elsif ($ok == $max && $next == $max+1) {
+! 	    if ($max and $skipped) {
+! 	        my $ender = 's' x ($skipped > 1);
+! 		print "ok, $skipped subtest$ender skipped on this platform\n";
+  	    } elsif ($max) {
+  		print "ok\n";
+  	    } else {
+--- 158,171 ----
+  				    estat => $estatus, wstat => $wstatus,
+  				  };
+  	} elsif ($ok == $max && $next == $max+1) {
+! 	    if ($max and $skipped + $bonus) {
+! 		my @msg;
+! 		push(@msg, "$skipped subtest".($skipped>1?'s':'')." skipped")
+! 		    if $skipped;
+! 		push(@msg, "$bonus subtest".($bonus>1?'s':'').
+! 		     " unexpectedly succeeded")
+! 		    if $bonus;
+! 		print "ok, ".join(', ', @msg)."\n";
+  	    } elsif ($max) {
+  		print "ok\n";
+  	    } else {
+***************
+*** 193,200 ****
+  	    delete $ENV{PERL5LIB};
+  	}
+      }
+      if ($bad == 0 && $totmax) {
+! 	    print "All tests successful.\n";
+      } elsif ($total==0){
+  	die "FAILED--no tests were run for some reason.\n";
+      } elsif ($totmax==0) {
+--- 212,223 ----
+  	    delete $ENV{PERL5LIB};
+  	}
+      }
++     my $bonusmsg = '';
++     $bonusmsg = (" ($totbonus subtest".($totbonus>1?'s':'').
++ 	       " UNEXPECTEDLY SUCCEEDED)")
++ 	if $totbonus;
+      if ($bad == 0 && $totmax) {
+! 	print "All tests successful$bonusmsg.\n";
+      } elsif ($total==0){
+  	die "FAILED--no tests were run for some reason.\n";
+      } elsif ($totmax==0) {
+***************
+*** 289,294 ****
+--- 312,321 ----
+  
+  =head1 DESCRIPTION
+  
++ (By using the L<Test> module, you can write test scripts without
++ knowing the exact output this module expects.  However, if you need to
++ know the specifics, read on!)
++ 
+  Perl test scripts print to standard output C<"ok N"> for each single
+  test, where C<N> is an increasing sequence of integers. The first line
+  output by a standard test script is C<"1..M"> with C<M> being the
+***************
+*** 372,378 ****
+  
+  =head1 SEE ALSO
+  
+! See L<Benchmark> for the underlying timing routines.
+  
+  =head1 AUTHORS
+  
+--- 399,406 ----
+  
+  =head1 SEE ALSO
+  
+! L<Test> for writing test scripts and also L<Benchmark> for the
+! underlying timing routines.
+  
+  =head1 AUTHORS
+  

@@ -1,9 +1,7 @@
 # -*-perl-*-
 use strict;
 use Test;
-BEGIN { todo tests => 3, failok => [3]; }
-
-ok(1);
+BEGIN { todo tests => 4, failok => [2,3]; }
 
 ok(sub { 
        my $r = 0;
@@ -14,3 +12,6 @@ ok(sub {
    });
 
 ok(0);
+ok(1);
+
+skip(1);

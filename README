@@ -1,0 +1,58 @@
+EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL
+EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL
+
+
+=head1 NAME
+
+  Test - provides a simple framework for writing test scripts
+
+=head1 SYNOPSIS
+
+  use strict;
+  use Test;
+  BEGIN { todo tests => 5, failok => [3,4] }
+
+  ok(0); #failure
+  ok(1); #success
+
+  ok(0); #ok, expected failure (see failok above)
+  ok(1); #surprise success!
+
+  skip($feature_missing, sub {...});    #do platform specific test
+
+=head1 DESCRIPTION
+
+Test::Harness expects to see particular output when it executes test
+scripts.  This module tries to make conforming just a little bit
+easier (and less error prone).
+
+=head1 TEST CATEGORIES
+
+=over 4
+
+=item * NORMAL TESTS
+
+These tests are expected to succeed.  If they don't, something is
+wrong.
+
+=item * SKIPPED TESTS
+
+Skipped tests should be used to skip platform specific tests when a
+required feature isn't available.
+
+=item * FAILOK TESTS
+
+Tests listed in failok will never be reported as failures, regardless
+of their success.  In fact, they are expected NOT to succeed.  As soon
+as a failok test starts working, it should be promoted to a normal
+test (remove from the failok list).
+
+Packages should NOT be released with successful failok tests.  Failok
+tests are available exclusively for maintaining an executable TODO
+list.
+
+=back
+
+
+EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL
+EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL EXPERIMENTAL

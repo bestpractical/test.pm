@@ -1,4 +1,10 @@
+Harness.diff
 MANIFEST
 Makefile.PL
-Test.pm
-t/test.t
+README
+lib/Test.pm
+lib/Test/Harness.pm
+t/failok.t
+t/mix.t
+t/perfect.t
+t/skip.t
