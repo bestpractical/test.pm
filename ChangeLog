@@ -1,4 +1,12 @@
-# ChangeLog for Test.pm dist         # Time-stamp: "2002-10-11 17:33:13 MDT"
+# ChangeLog for Test.pm dist         # Time-stamp: "2003-04-18 21:47:34 AHDT"
+
+2003-04-18  Sean M. Burke <sburke@cpan.org>
+	* Release 1.24
+	* Two cosmetic fixes:  Ken Williams spotted the typo (tr/[...]//d
+	for tr/...//d) that was deleting brackets in program source
+	lines.  Fixed.
+	* And Rob Nagler noticed that I was reporting the MacPerl
+	"verison" instead of "version".  Fixed.  That's all.
 
 2002-10-11  Sean M. Burke <sburke@cpan.org>
 	* Release 1.23
