@@ -1,9 +1,8 @@
 # -*-perl-*-
 use strict;
-use Fatal qw(open);
 use Test qw($TESTOUT $ntest plan ok skip); plan tests => 5;
 
-open F, ">skips";
+open F, ">skips" or die "open skips: $!";
 $TESTOUT = *F{IO};
 
 skip(1, 0);  #should skip
@@ -16,7 +15,7 @@ close F;
 
 $TESTOUT = *STDOUT{IO};
 $ntest = 1;
-open F, "skips";
+open F, "skips" or die "open skips: $!";
 
 ok $skipped, 1, 'not skipped?';
 

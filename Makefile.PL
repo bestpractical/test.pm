@@ -1,4 +1,4 @@
-use 5.005; # for qr//
+require 5.004_05; #probably
 use ExtUtils::MakeMaker;
 
 WriteMakefile
