@@ -1,5 +1,11 @@
-# ChangeLog for Test.pm dist         # Time-stamp: "2002-08-26 03:14:50 MDT"
+# ChangeLog for Test.pm dist         # Time-stamp: "2002-08-28 22:28:02 MDT"
 
+2002-08-28  Sean M. Burke <sburke@cpan.org>
+	* Release 1.22
+	* Doc note about the danger of "ok Foo->can('bar');", as helpfully
+	noted by Schwern
+	* Applied Schwern's fix for false positives with "ok 1, undef;"
+	
 2002-08-26  Sean M. Burke <sburke@cpan.org>
 	* Release 1.21
 	* I take over maintenance.
