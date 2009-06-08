@@ -1,6 +1,11 @@
-# ChangeLog for Test.pm dist         # Time-stamp: "2004-04-24 20:33:01 ADT"
+# ChangeLog for Test.pm dist
 
-
+2009-06-08  Jesse R Vincent <jesse@bestpractical.com>
+	* Release 1.25_02
+	* Typo fixes from Perl core
+	* README updated
+	* Ancient TODO removed
+	* New Maintainer
 
 2004-04-24  Sean M. Burke <sburke@cpan.org>
 	* Release 1.25
