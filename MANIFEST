@@ -13,5 +13,4 @@ t/qr.t
 t/skip.t
 t/success.t
 t/todo.t
-TODO
 META.yml                                 Module meta-data (added by MakeMaker)
