@@ -1,5 +1,8 @@
 # ChangeLog for Test.pm dist
 
+1.26    2013-01-16  Jesse R Vincent <jesse@bestpractical.com>
+	* Bump version to a stable number. No functional changes
+
 1.25_02 2009-06-08  Jesse R Vincent <jesse@bestpractical.com>
 	* Typo fixes from Perl core
 	* README updated
