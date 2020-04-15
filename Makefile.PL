@@ -9,7 +9,6 @@ WriteMakefile
      VERSION_FROM	=> './lib/Test.pm',
      ABSTRACT_FROM	=> './lib/Test.pm',
      PREREQ_PM	  	=> {
-       'File::Spec'    => 0,
      },
      INSTALLDIRS        => 'perl',
     );
