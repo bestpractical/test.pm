@@ -9,8 +9,6 @@ WriteMakefile
      VERSION_FROM	=> './lib/Test.pm',
      ABSTRACT_FROM	=> './lib/Test.pm',
      PREREQ_PM	  	=> {
-       'Test::Harness' => 1.1601,
-       'File::Spec'    => 0,
      },
      INSTALLDIRS        => 'perl',
     );
